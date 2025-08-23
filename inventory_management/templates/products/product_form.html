@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if object %}Edit Product{% else %}Add Product{% endif %} - Product Management
+{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">
+            <i class="fas fa-{% if object %}edit{% else %}plus{% endif %} text-primary"></i>
+            {% if object %}Edit Product{% else %}Add Product{% endif %}
+        </h1>
+        <a href="{% url 'products:product_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Products
+        </a>
+    </div>
+
+    <!-- Product Form -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> Product Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Product Name -->
+                        <div class="mb-3">
+                            <label for="{{ form.product_name.id_for_label }}" class="form-label">
+                                <i class="fas fa-tag"></i> Product Name *
+                            </label>
+                            {{ form.product_name }}
+                            {% if form.product_name.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.product_name.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-3">
+                            <label for="{{ form.category.id_for_label }}" class="form-label">
+                                <i class="fas fa-folder"></i> Category
+                            </label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.category.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Price and Stock Row -->
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="{{ form.price.id_for_label }}" class="form-label">
+                                        <i class="fas fa-dollar-sign"></i> Price ($) *
+                                    </label>
+                                    {{ form.price }}
+                                    {% if form.price.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.price.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="{{ form.stock_quantity.id_for_label }}" class="form-label">
+                                        <i class="fas fa-cubes"></i> Stock Quantity *
+                                    </label>
+                                    {{ form.stock_quantity }}
+                                    {% if form.stock_quantity.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.stock_quantity.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="{{ form.min_threshold.id_for_label }}" class="form-label">
+                                        <i class="fas fa-exclamation-triangle"></i> Min Threshold *
+                                    </label>
+                                    {{ form.min_threshold }}
+                                    {% if form.min_threshold.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.min_threshold.errors %}
+                                                <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-text">Alert when stock reaches this level</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                <i class="fas fa-align-left"></i> Description
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.description.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Stock Status Preview (for edit mode) -->
+                        {% if object %}
+                            <div class="mb-4">
+                                <div class="alert alert-info">
+                                    <strong>Current Status:</strong>
+                                    <span class="stock-indicator 
+                                           {% if object.stock_status == 'OUT_OF_STOCK' %}text-danger
+                                           {% elif object.stock_status == 'LOW_STOCK' %}text-warning
+                                           {% else %}text-success{% endif %}">
+                                        {{ object.stock_status_display }}
+                                    </span>
+                                    <br>
+                                    <small class="text-muted">
+                                        Created: {{ object.created_date|date:"M d, Y H:i" }} | 
+                                        Last Updated: {{ object.last_updated|date:"M d, Y H:i" }}
+                                    </small>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Form Actions -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'products:product_list' %}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                {% if object %}Update Product{% else %}Add Product{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
