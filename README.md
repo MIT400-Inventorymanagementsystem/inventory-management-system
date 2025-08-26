@@ -3,23 +3,20 @@
 ** Sadhana Regmi 
 **Project:** Python MySQL Inventory Management System  
 
----
-
-## 🎯 What This Module Does
 
 This module handles the **Sales & Returns** and **Customer Management** parts of our team's inventory management system.
 
 ### Features:
-- ✅ **Customer Registration** - Add new customers with validation
-- ✅ **Customer Management** - View and search customer records
-- ✅ **Sales Recording** - Process sales with automatic stock deduction
-- ✅ **Returns Processing** - Handle product returns with stock restoration
-- ✅ **Stock Validation** - Prevent overselling and invalid transactions
-- ✅ **Error Handling** - User-friendly error messages and data protection
+-  **Customer Registration** - Add new customers with validation
+- **Customer Management** - View and search customer records
+-  **Sales Recording** - Process sales with automatic stock deduction
+-  **Returns Processing** - Handle product returns with stock restoration
+-  **Stock Validation** - Prevent overselling and invalid transactions
+- **Error Handling** - User-friendly error messages and data protection
 
 ---
 
-## 📁 Files in This Module
+##  Files in This Module
 
 - **`sadhana_sales_customer_management.ipynb`** - Main Jupyter notebook with all code
 - **`README.md`** - This instruction file
@@ -27,7 +24,7 @@ This module handles the **Sales & Returns** and **Customer Management** parts of
 
 ---
 
-## 🚀 How to Run My Code
+##  How to Run My Code
 
 ### Step 1: Install Required Libraries
 ```bash
@@ -53,7 +50,7 @@ jupyter notebook sadhana_sales_customer_management.ipynb
 
 ---
 
-## 🗄️ Database Tables I Created
+##  Database Tables I Created
 
 My code creates these tables:
 
@@ -64,9 +61,9 @@ My code creates these tables:
 
 ---
 
-## 🧪 Testing Results
+##  Testing Results
 
-**All test cases PASSED ✅**
+**All test cases PASSED **
 
 - **Customer Management:** 5/5 tests passed
 - **Sales Recording:** 5/5 tests passed  
@@ -76,7 +73,7 @@ My code creates these tables:
 
 ---
 
-## 🔗 Integration with Team
+##  Integration with Team
 
 ### My Functions Can Be Used By:
 - **Karuna** - Product management connects to my sales functions
@@ -90,9 +87,9 @@ My code creates these tables:
 
 ---
 
-## 📊 What I Contributed to Team Report
+##  What I Contributed to Team Report
 
-**Report Pages 6-7:** 
+**Report :** 
 - Detailed transaction flow explanation
 - Complete testing documentation  
 - System validation results
@@ -100,7 +97,7 @@ My code creates these tables:
 
 ---
 
-## 💡 How to Use My Functions
+##  How to Use My Functions
 
 ### Add a Customer:
 ```python
@@ -126,7 +123,7 @@ returns_df = view_returns()      # See all returns
 
 ---
 
-## ⚠️ Important Notes
+##  Notes
 
 - **Database:** Currently uses SQLite (inventory_system.db file)
 - **Testing:** All functions include error handling and validation
@@ -135,7 +132,7 @@ returns_df = view_returns()      # See all returns
 
 ---
 
-## 👥 Team Project Structure
+## Team Project Structure
 
 ```
 Our Team Project/
@@ -148,4 +145,5 @@ Our Team Project/
 └── docs/
     └── team_report.md
 ```
+
 
