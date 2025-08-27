@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% block title %}Inventory Reports & Analytics{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+  <h1 class="h2 mb-4">
+    <i class="fas fa-chart-line text-primary"></i> Reports & Analytics
+  </h1>
+
+  <!-- KPI Row 1 (inventory) -->
+  <div class="row mb-4">
+    <!-- Low-stock count -->
+    <div class="col-md-4">
+      <div class="card text-white bg-warning mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Low-Stock Items</h5>
+          <p class="card-text display-6">{{ low_stock_count }}</p>
+        </div>
+      </div>
+    </div>
+     <!-- Total inventory value -->
+    <div class="col-md-4">
+      <div class="card text-white bg-info mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Inventory Value</h5>
+          <p class="card-text display-6">${{ inventory_value }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- In-stock product count -->
+    <div class="col-md-4">
+      <div class="card text-white bg-success mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Products In Stock</h5>
+          <p class="card-text display-6">{{ stock_counts.in }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Row 2 (sales/returns) -->
+  <div class="row mb-4">
+    <!-- Total revenue -->
+    <div class="col-md-4">
+      <div class="card text-white bg-primary mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Total Revenue</h5>
+          <p class="card-text display-6">${{ total_revenue }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Return rate (%) -->
+    <div class="col-md-4">
+      <div class="card text-white bg-secondary mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Return Rate</h5>
+          <p class="card-text display-6">{{ return_rate }}%</p>
+        </div>
+      </div>
+    </div>
+    <!-- Total customers -->
+    <div class="col-md-4">
+      <div class="card text-white bg-dark mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Customers</h5>
+          <p class="card-text display-6">{{ total_customers }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="row">
+    <!-- Donut chart: Stock status -->
+    <div class="col-md-6">
+      <canvas id="statusChart"></canvas>
+    </div>
+    <!-- Bar chart: Product counts per category -->
+    <div class="col-md-6">
+      <canvas id="catCountChart"></canvas>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <!-- Bar chart: Inventory value per category -->
+    <div class="col-md-12">
+      <canvas id="catValueChart"></canvas>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <!-- Line chart: Sales (last 30 days) -->
+    <div class="col-md-12"><canvas id="salesRevenueChart"></canvas></div>
+  </div>
+  <div class="row mt-4">
+    <!-- Top 5 products by quantity -->
+    <div class="col-md-6">
+      <canvas id="topProductsQtyChart"></canvas>
+    </div>
+    <!-- Top 5 products by revenue -->
+    <div class="col-md-6">
+      <canvas id="topProductsRevChart"></canvas>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{# Safe JSON payloads #}
+{{ stock_counts    | json_script:"stock-counts" }}
+{{ category_labels | json_script:"category-labels" }}
+{{ category_counts | json_script:"category-counts" }}
+{{ category_values | json_script:"category-values" }}
+{{ sales_day_labels | json_script:"sales-day-labels" }}
+{{ sales_rev_series | json_script:"sales-rev-series" }}
+{{ sales_qty_series | json_script:"sales-qty-series" }}
+{{ top_labels       | json_script:"top-labels" }}
+{{ top_qty          | json_script:"top-qty" }}
+{{ top_rev          | json_script:"top-rev" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // To read JSON safely from the DOM
+  const stockCounts = JSON.parse(document.getElementById('stock-counts').textContent);
+  const catLabels   = JSON.parse(document.getElementById('category-labels').textContent);
+  const catCounts   = JSON.parse(document.getElementById('category-counts').textContent);
+  const catValues   = JSON.parse(document.getElementById('category-values').textContent);
+  const dayLabels = JSON.parse(document.getElementById('sales-day-labels').textContent);
+  const revSeries = JSON.parse(document.getElementById('sales-rev-series').textContent);
+  const qtySeries = JSON.parse(document.getElementById('sales-qty-series').textContent);
+  const topLabels = JSON.parse(document.getElementById('top-labels').textContent);
+  const topQty    = JSON.parse(document.getElementById('top-qty').textContent);
+  const topRev    = JSON.parse(document.getElementById('top-rev').textContent);
+  // NOTE: 'in' is a reserved word; so use bracket access
+  new Chart(document.getElementById('statusChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['In Stock','Low Stock','Out of Stock'],
+      datasets: [{ data: [stockCounts['in'], stockCounts['low'], stockCounts['out']] }]
+    }
+  });
+
+  new Chart(document.getElementById('catCountChart'), {
+    type: 'bar',
+    data: {
+      labels: catLabels,
+      datasets: [{ label: 'Products per Category', data: catCounts }]
+    },
+    options: { scales: { y: { beginAtZero: true } } }
+  });
+
+  new Chart(document.getElementById('catValueChart'), {
+    type: 'bar',
+    data: {
+      labels: catLabels,
+      datasets: [{ label: 'Inventory Value ($)', data: catValues }]
+    },
+    options: { scales: { y: { beginAtZero: true } } }
+  });
+
+  new Chart(document.getElementById('salesRevenueChart'), {
+  type: 'line',
+  data: {
+    labels: dayLabels,
+    datasets: [
+      { label: 'Revenue ($)', data: revSeries },
+      { label: 'Quantity',    data: qtySeries }
+    ]
+  },
+  options: { scales: { y: { beginAtZero: true } } }
+});
+
+new Chart(document.getElementById('topProductsQtyChart'), {
+  type: 'bar',
+  data: { labels: topLabels, datasets: [{ label: 'Top by Quantity', data: topQty }] },
+  options: { scales: { y: { beginAtZero: true } } }
+});
+
+new Chart(document.getElementById('topProductsRevChart'), {
+  type: 'bar',
+  data: { labels: topLabels, datasets: [{ label: 'Top by Revenue ($)', data: topRev }] },
+  options: { scales: { y: { beginAtZero: true } } }
+});
+</script>
+{% endblock %}

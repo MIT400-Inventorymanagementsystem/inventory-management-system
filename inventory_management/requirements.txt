@@ -1,0 +1,11 @@
+# === Core backend ===
+Django==4.2.7
+
+# === MySQL driver (Django uses this because of `pymysql.install_as_MySQLdb()` in settings.py) ===
+PyMySQL==1.1.1
+
+# Optional: used by the legacy tkinter script (not required by Django web app)
+mysql-connector-python==8.3.0
+
+# === Optional analytics frontend (only if you plan to run the Matplotlib version) ===
+matplotlib>=3.8

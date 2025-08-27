@@ -105,7 +105,12 @@ class ProductDeleteView(DeleteView):
         product_name = self.get_object().product_name
         messages.success(request, f'Product "{product_name}" deleted successfully!')
         return super().delete(request, *args, **kwargs)
-
+    
+    def get_context_data(self, **kwargs): # Shows neutral message when there are no products
+        context = super().get_context_data(**kwargs)
+        ...
+        context['has_products'] = Product.objects.exists()   # 👈 add this
+        return context
 
 def ajax_search_products(request):
     """AJAX search for real-time filtering"""
